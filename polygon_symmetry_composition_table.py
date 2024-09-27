@@ -24,7 +24,8 @@ def polygon_symmetry_composition_table(n):
             # Find the index of the symmetry in the list of symmetries.
             # The `all` function is used to compare the arrays (consisting of each point of the polygon) element-wise.
             composition_table[i, j] = np.where(np.all(symmetries == result, axis=1))[0][0]
-    return composition_table
+    # Convert composition table to string table of symbols.
+    return np.vectorize(lambda x: get_symbol(x, n))(composition_table)
 
 
 def apply_symmetry(symmetry, point, n):
@@ -51,6 +52,18 @@ def apply_symmetry(symmetry, point, n):
     else:
         # Rotate the polygon by `symmetry - n` steps counterclockwise.
         return (point + symmetry - 1) % n + 1
+
+
+def get_symbol(symmetry, n):
+    if symmetry == 0:
+        return "I"
+    elif symmetry <= n:
+        if n % 2 == 0 and symmetry > n / 2:
+            return "r̄" + str(int(symmetry - n / 2))
+        else:
+            return "r" + str(symmetry)
+    else:
+        return "R" + str(symmetry - n)
 
 
 if __name__ == "__main__":
